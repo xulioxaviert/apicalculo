@@ -1,5 +1,7 @@
 const Activity = require("./activity.model");
 
+
+
 const getAll = async (req, res, next) => {
   //logger
   try {
@@ -7,7 +9,7 @@ const getAll = async (req, res, next) => {
 
     res.status(200).json(activities);
   } catch (error) {
-    return next(error);
+    return next(setError(404, "Not Found"));
   }
 };
 
@@ -17,7 +19,7 @@ const getOne = async (req, res, next) => {
     const activity = await Activity.findById(_id);
     res.status(200).json(activity);
   } catch (error) {
-    return next(error);
+    return next(setError(404, "Not Found"));
   }
 };
 
@@ -27,7 +29,7 @@ const getOneByActivityId = async (req, res, next) => {
     const activity = await Activity.find({ id: id });
     res.status(200).json(activity);
   } catch (error) {
-    return next(error);
+    return next(setError(404, "Not Found"));
   }
 };
 
@@ -39,7 +41,7 @@ const getAllByType = async (req, res, next) => {
 
     res.status(200).json(activities);
   } catch (error) {
-    return next(error);
+    return next(setError(404, "Not Found"));
   }
 };
 
