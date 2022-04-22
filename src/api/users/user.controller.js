@@ -3,17 +3,26 @@ const bcrypt = require("bcrypt");
 const JwtUtils = require("../../utils/jwt/jwt");
 const { setError } = require("../../utils/error/error");
 
+const getOne = async (req, res, next) => {
+  try {
+    console.log(req.params);
+    const { _id } = req.params;
+    const user = await User.findById(_id);
+    res.status(200).json(user);
+  } catch (error) {
+    return next(error);
+  }
+};
 
 const register = async (req, res, next) => {
-  console.log(req.body);
   try {
+    console.log("dentro de register", req.body);
     const user = new User(req.body);
-    //const { email } = req.body.email;
-    const userExist = await User.findOne({ email: user.email });
-    //console.log(email);
 
+    const userExist = await User.findOne({ email: user.email });
     if (userExist) {
-      return next(setError(403, 'User already exists'));
+      // TODO: Errores
+      return next(new Error());
     }
     const userDB = await user.save();
     return res.status(201).json(userDB.name);
@@ -26,7 +35,7 @@ const login = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      return next(setError(404, 'This user is not registered'));
+      return next(setError(404, "This user is not registered"));
     }
 
     if (bcrypt.compareSync(req.body.password, user.password)) {
@@ -60,10 +69,7 @@ const addActivity = async (req, res, next) => {
   try {
     const { _id } = req.params;
     const { id } = req.params;
-    const user = await User.updateOne(
-      { _id: _id },
-      { $push: { completedActivities: id } }
-    );
+    const user = await User.updateOne({ _id: _id }, { $push: { completedActivities: id } });
 
     res.status(200).json(user.completedActivities);
   } catch (error) {
@@ -72,6 +78,7 @@ const addActivity = async (req, res, next) => {
 };
 
 module.exports = {
+  getOne,
   register,
   login,
   logout,

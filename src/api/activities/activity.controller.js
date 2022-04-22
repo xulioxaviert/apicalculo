@@ -6,7 +6,6 @@ const getAll = async (req, res, next) => {
   //logger
   try {
     const activities = await Activity.find();
-
     res.status(200).json(activities);
   } catch (error) {
     return next(setError(404, "Not Found"));
@@ -47,6 +46,7 @@ const getAllByType = async (req, res, next) => {
 
 const postOne = async (req, res, next) => {
   try {
+    console.log('dentro de post activity',req.body)
     const activity = new Activity();
     activity.id = req.body.id;
     activity.level = req.body.level;

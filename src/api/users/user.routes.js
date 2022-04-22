@@ -1,13 +1,9 @@
 const UserRoutes = require("express").Router();
-const { register, login, logout, getCompletedActivities, addActivity } = require("./user.controller");
-
+const { register, login, logout, getCompletedActivities, addActivity, getOne } = require("./user.controller");
 const { isAuth } = require("../../middlewares/auth.middleware");
 
-//UserRoutes.post("/register",  register);
-UserRoutes.post("/register", async (req, res) => {
-    console.log(req.body);
-    res.json(register)
-});
+UserRoutes.get("/:_id", getOne)
+UserRoutes.post("/register", register);
 UserRoutes.post("/login", login);
 UserRoutes.post("/logout", [isAuth], logout);
 UserRoutes.get("/completed-activities", [isAuth], getCompletedActivities);
