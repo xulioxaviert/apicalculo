@@ -7,7 +7,9 @@ const getOne = async (req, res, next) => {
   try {
     console.log(req.params);
     const { _id } = req.params;
-    const user = await User.findById(_id);
+    
+    const user = await User.findById(_id).populate("activities");
+    
     res.status(200).json(user);
   } catch (error) {
     return next(error);
@@ -58,8 +60,8 @@ const logout = (req, res, next) => {
 const getCompletedActivities = async (req, res, next) => {
   try {
     const { _id } = req.params;
-    const user = await User.findById(_id);
-    res.status(200).json(user.completedActivities);
+    const user = await User.findById(_id).populate("activities");
+    res.status(200).json(user);
   } catch (error) {
     return next(error);
   }
@@ -67,13 +69,13 @@ const getCompletedActivities = async (req, res, next) => {
 
 const addActivity = async (req, res, next) => {
   try {
-    const { _id } = req.params;
     const { id } = req.params;
-    const user = await User.updateOne({ _id: _id }, { $push: { completedActivities: id } });
-
-    res.status(200).json(user.completedActivities);
+    const user = new User(req.body);
+    user._id = id;
+    const updateUser = await User.findByIdAndUpdate(id, user);
+    res.status(200).json(updateUser);
   } catch (error) {
-    return next(error);
+    return next(setError(error.statusCode, "Item not modified"));
   }
 };
 

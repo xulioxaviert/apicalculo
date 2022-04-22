@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const {
   validationPassword,
   validationEmail,
-} = require("../../utils/validators/validators"); 
+} = require("../../utils/validators/validators");
 
 const userSchema = new mongoose.Schema(
   {
@@ -12,7 +12,13 @@ const userSchema = new mongoose.Schema(
     name: { type: String, trim: true, required: true },
     role: { type: String, trim: true, required: true },
     password: { type: String, trim: true, required: true },
-    completedActivities: [{ type: String, trim: true }],
+    completedActivities: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "activities",
+        require: false,
+      },
+    ],
   },
   {
     timestamps: true,

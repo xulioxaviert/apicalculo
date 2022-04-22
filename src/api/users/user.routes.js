@@ -6,7 +6,7 @@ UserRoutes.get("/:_id", getOne)
 UserRoutes.post("/register", register);
 UserRoutes.post("/login", login);
 UserRoutes.post("/logout", [isAuth], logout);
-UserRoutes.get("/completed-activities", [isAuth], getCompletedActivities);
-UserRoutes.post("/add-activity", [isAuth], addActivity);
+UserRoutes.get("/completed-activities/:_id", getCompletedActivities);
+UserRoutes.patch("/add-activity/:id",  addActivity);
 
 module.exports = UserRoutes;

@@ -1,7 +1,6 @@
 const Activity = require("./activity.model");
 
 
-
 const getAll = async (req, res, next) => {
   //logger
   try {
