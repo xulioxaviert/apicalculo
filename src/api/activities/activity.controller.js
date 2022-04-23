@@ -2,12 +2,14 @@ const Activity = require("./activity.model");
 
 
 const getAll = async (req, res, next) => {
-  //logger
+  
   try {
     const activities = await Activity.find();
     res.status(200).json(activities);
   } catch (error) {
-    return next(setError(404, "Not Found"));
+  return next(
+    setError(error.statusCode, "An error occured getting all activities")
+  );
   }
 };
 
@@ -17,29 +19,24 @@ const getOne = async (req, res, next) => {
     const activity = await Activity.findById(_id);
     res.status(200).json(activity);
   } catch (error) {
-    return next(setError(404, "Not Found"));
+    return next(
+      setError(error.statusCode, "An error occured getting the activity")
+    );
   }
 };
 
-const getOneByActivityId = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const activity = await Activity.find({ id: id });
-    res.status(200).json(activity);
-  } catch (error) {
-    return next(setError(404, "Not Found"));
-  }
-};
 
 const getAllByType = async (req, res, next) => {
-  //logger
+  
   try {
     const { type } = req.params;
     const activities = await Activity.find({ type: type });
 
     res.status(200).json(activities);
   } catch (error) {
-    return next(setError(404, "Not Found"));
+    return next(
+      setError(error.statusCode, "An error occured getting activities by type")
+    );
   }
 };
 
@@ -54,7 +51,9 @@ const postOne = async (req, res, next) => {
     const activityDB = await activity.save();
     return res.status(201).json(activityDB);
   } catch (error) {
-    return next(error);
+    return next(
+      setError(error.statusCode, "An error occured creating an activity")
+    );
   }
 };
 
@@ -65,7 +64,7 @@ const deleteOne = async (req, res, next) => {
     const Activity = await Activity.findByIdAndDelete(_id);
     return res.status(200).json(Activity);
   } catch (error) {
-    return next(error);
+    return next(setError(error.statusCode, "An error occured deleting an activity"));
   }
 };
 
@@ -75,5 +74,5 @@ module.exports = {
   postOne,
   deleteOne,
   getAllByType,
-  getOneByActivityId,
+  
 };

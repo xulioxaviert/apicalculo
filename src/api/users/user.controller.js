@@ -7,12 +7,12 @@ const getOne = async (req, res, next) => {
   try {
     console.log(req.params);
     const { _id } = req.params;
-    
-    const user = await User.findById(_id).populate("activities");
-    
+
+    const user = await User.findById(_id).populate("completedActivities");
+
     res.status(200).json(user);
   } catch (error) {
-    return next(error);
+    return next(setError(error.statusCode, "An error occured getting user"));
   }
 };
 
@@ -24,12 +24,12 @@ const register = async (req, res, next) => {
     const userExist = await User.findOne({ email: user.email });
     if (userExist) {
       // TODO: Errores
-      return next(new Error());
+      return next(setError(error.statusCode, "User already exists"));
     }
     const userDB = await user.save();
     return res.status(201).json(userDB.name);
   } catch (error) {
-    return next(error);
+    return next(setError(error.statusCode, "Register unsuccessful"));
   }
 };
 
@@ -45,7 +45,9 @@ const login = async (req, res, next) => {
 
       return res.status(200).json(token);
     }
-  } catch (error) {}
+  } catch (error) {
+    return next(setError(error.statusCode, "Logging unsuccessful"));
+  }
 };
 
 const logout = (req, res, next) => {
@@ -53,17 +55,9 @@ const logout = (req, res, next) => {
     const token = null;
     return res.status(201).json(token);
   } catch (error) {
-    return next(error);
-  }
-};
-
-const getCompletedActivities = async (req, res, next) => {
-  try {
-    const { _id } = req.params;
-    const user = await User.findById(_id).populate("activities");
-    res.status(200).json(user);
-  } catch (error) {
-    return next(error);
+    return next(
+      setError(error.statusCode, "An error occured while logging out ")
+    );
   }
 };
 
@@ -84,6 +78,5 @@ module.exports = {
   register,
   login,
   logout,
-  getCompletedActivities,
   addActivity,
 };

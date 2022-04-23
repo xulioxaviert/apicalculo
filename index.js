@@ -51,7 +51,7 @@ app.disable("x-powered-by");
 
 app.use((req, res, next) => {
   setImmediate(() => {
-    next(new Error("Something went wrong"));
+    next(setError(error.statusCode, "Something went wrong"));
   });
 });
 
